@@ -1280,5 +1280,8 @@ declare namespace API {
 
   type UserUpdateParams = {
     id: number;
-  };
+  }
+
+
+
 }
