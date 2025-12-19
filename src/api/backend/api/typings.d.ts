@@ -256,6 +256,12 @@ declare namespace API {
     updatedAt: string;
   };
 
+  type DictTypeResponseVo = DictTypeEntity & {
+    /** 字典项列表 */
+    children: DictItemEntity[];
+  };
+
+
   type DictTypeInfoParams = {
     id: number;
   };
@@ -275,6 +281,7 @@ declare namespace API {
   type DictTypeUpdateParams = {
     id: number;
   };
+
 
   type Disk = {
     /** 磁盘空间大小 (bytes) */

@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { type DictType, getDictData } from '@/api/demo/dict';
 
@@ -6,6 +6,7 @@ export const useDictStore = defineStore('dict', () => {
   const dictMap = ref(new Map<string, LabelValueOptions>());
   const dictValueLabelMap = ref(new Map<string, Map<any, string>>());
   const dictPendingMap = ref(new Map<string, boolean>());
+  const getDictOpions = (dictType: DictType) => computed(() => dictMap.value.get(dictType))
 
   const fetchDict = (dictType: DictType | DictType[]) => {
     const dictTypes = Array.isArray(dictType) ? dictType : [dictType];
@@ -51,5 +52,5 @@ export const useDictStore = defineStore('dict', () => {
     },
   });
 
-  return { dictData, dictPending, fetchDict, showDictLabel };
+  return { dictData, dictPending, fetchDict, showDictLabel, getDictOpions };
 });

@@ -97,3 +97,17 @@ export async function dictTypeGetAll(options?: RequestOptions) {
     ...(options || {}),
   });
 }
+
+/** 获取指定字典code 的所有字典项 GET /api/system/dict-type/items/${code} */
+export async function dictTypeGetItems(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: { code: string },
+  options?: RequestOptions,
+) {
+  const { code, ...queryParams } = params;
+  return request<API.DictTypeResponseVo>(`/api/system/dict-type/items/${code}`, {
+    method: 'GET',
+    params: { ...queryParams },
+    ...(options || {}),
+  });
+}

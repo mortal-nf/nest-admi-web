@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="tsx">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Alert, Modal } from 'ant-design-vue';
 import { projectSchemas } from './formSchemas';
@@ -34,15 +34,18 @@ import type { LoadDataParams } from '@/components/core/dynamic-table';
 import { useTable } from '@/components/core/dynamic-table';
 import Api from '@/api/';
 import { useFormModal } from '@/hooks/useModal/';
+import { useDictStore } from '@/store/modules/dict';
 
-const statusOptions = ref([])
+const { fetchDict, getDictOpions } = useDictStore()
+
+onMounted(() => fetchDict('project_status'))
 
 const [DynamicTable, dynamicTableInstance] = useTable({
   formProps: {
     autoSubmitOnEnter: true,
     schemas: [
       { field: 'name', component: 'Input', label: '项目名称', colProps: { span: 8 } },
-      { field: 'status', component: 'Select', label: '项目状态', componentProps: { options: statusOptions.value }, colProps: { span: 8 } },
+      { field: 'status', component: 'Select', label: '项目状态', componentProps: { options: getDictOpions('project_status').value }, colProps: { span: 8 } },
       { field: 'startDate', component: 'DatePicker', label: '开始日期', componentProps: { style: { width: '100%' } }, colProps: { span: 8 } },
       { field: 'endDate', component: 'DatePicker', label: '结束日期', componentProps: { style: { width: '100%' } }, colProps: { span: 8 } }
     ]
