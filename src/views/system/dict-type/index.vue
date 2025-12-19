@@ -43,6 +43,7 @@
   import { useTable } from '@/components/core/dynamic-table';
   import { useFormModal } from '@/hooks/useModal/';
   import Api from '@/api/';
+import { useRouter } from 'vue-router';
 
   defineOptions({
     name: 'SystemDict',
@@ -91,16 +92,23 @@
     await Api.systemDictType.dictTypeDelete({ id: record.id });
     dynamicTableInstance?.reload();
   };
+  const router = useRouter();
 
   const columns: TableColumnItem[] = [
     ...baseColumns,
     {
       title: '操作',
-      width: 130,
+      width: 200,
       dataIndex: 'ACTION',
       hideInSearch: true,
       fixed: 'right',
       actions: ({ record }) => [
+        {
+          label:'查看',
+          onClick: () => {
+            router.push({path:`/system/dict-item/${record.id}`});
+          },
+        },
         {
           label: '编辑',
           auth: {

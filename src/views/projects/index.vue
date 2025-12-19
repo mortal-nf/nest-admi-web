@@ -1,13 +1,6 @@
 <template>
-  <DynamicTable
-    header-title="项目管理"
-    show-index
-    title-tooltip="项目管理模块，用于创建、编辑和删除项目。"
-    :data-request="loadTableData"
-    :columns="columns"
-    :scroll="{ x: 1200 }"
-    :row-selection="rowSelection"
-  >
+  <DynamicTable header-title="项目管理" show-index title-tooltip="项目管理模块，用于创建、编辑和删除项目。" :data-request="loadTableData"
+    :columns="columns" :scroll="{ x: 1200 }" :row-selection="rowSelection">
     <template v-if="isCheckRows" #title>
       <Alert class="w-full" type="info" show-icon>
         <template #message>
@@ -18,36 +11,43 @@
     </template>
     <template #toolbar>
       <!-- :disabled="!$auth('projects:create')" -->
-      <a-button
-        type="primary"
-        @click="openProjectModal({})"
-      >
-        <Icon icon="ant-design:plus-outlined" /> 新增
+      <a-button type="primary" @click="openProjectModal({})">
+        <Icon icon="ant-design:plus-outlined" />
+        新增
       </a-button>
       <!--  -->
-      <a-button
-        type="error"
-        :disabled="!isCheckRows"
-        @click="delRowConfirm(rowSelection.selectedRowKeys)"
-      >
-        <Icon icon="ant-design:delete-outlined" /> 删除
+      <a-button type="error" :disabled="!isCheckRows" @click="delRowConfirm(rowSelection.selectedRowKeys)">
+        <Icon icon="ant-design:delete-outlined" />
+        删除
       </a-button>
     </template>
   </DynamicTable>
 </template>
 
 <script setup lang="tsx">
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
-import { Modal, Alert } from 'ant-design-vue';
+import { Alert, Modal } from 'ant-design-vue';
 import { projectSchemas } from './formSchemas';
-import { baseColumns, type TableListItem, type TableColumnItem } from './columns';
+import { baseColumns, type TableColumnItem, type TableListItem } from './columns';
 import type { LoadDataParams } from '@/components/core/dynamic-table';
 import { useTable } from '@/components/core/dynamic-table';
 import Api from '@/api/';
 import { useFormModal } from '@/hooks/useModal/';
 
-const [DynamicTable, dynamicTableInstance] = useTable({ formProps: { autoSubmitOnEnter: true } });
+const statusOptions = ref([])
+
+const [DynamicTable, dynamicTableInstance] = useTable({
+  formProps: {
+    autoSubmitOnEnter: true,
+    schemas: [
+      { field: 'name', component: 'Input', label: '项目名称', colProps: { span: 8 } },
+      { field: 'status', component: 'Select', label: '项目状态', componentProps: { options: statusOptions.value }, colProps: { span: 8 } },
+      { field: 'startDate', component: 'DatePicker', label: '开始日期', componentProps: { style: { width: '100%' } }, colProps: { span: 8 } },
+      { field: 'endDate', component: 'DatePicker', label: '结束日期', componentProps: { style: { width: '100%' } }, colProps: { span: 8 } }
+    ]
+  }
+});
 const [showModal] = useFormModal();
 
 const rowSelection = ref({
@@ -78,7 +78,6 @@ const loadTableData = async (params: LoadDataParams) => {
  */
 const openProjectModal = async (record: Partial<TableListItem> = {}) => {
   const isUpdate = Boolean(record.id);
-
   const [formRef] = await showModal({
     modalProps: {
       title: `${isUpdate ? '编辑' : '新增'}项目`,
@@ -98,8 +97,9 @@ const openProjectModal = async (record: Partial<TableListItem> = {}) => {
       },
     },
     formProps: {
+      labelWidth: 100,
       schemas: projectSchemas(),
-      initialValues: { ...record },
+      autoSubmitOnEnter: true,
     },
   });
 
@@ -140,7 +140,7 @@ const columns: TableColumnItem[] = [
   ...baseColumns,
   {
     title: '操作',
-    width: 180,
+    width: 200,
     dataIndex: 'ACTION',
     fixed: 'right',
     hideInSearch: true,

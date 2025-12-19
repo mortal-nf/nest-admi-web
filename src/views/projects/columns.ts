@@ -2,7 +2,7 @@ import type { TableColumn } from '@/components/core/dynamic-table/src/types/colu
 
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
-import { Icon } from '@iconify/vue';
+
 
 // 项目状态映射
 const statusMap: Record<string, { color: string; text: string }> = {
