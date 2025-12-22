@@ -7,7 +7,7 @@ export interface TableListItem {
   id: number;
   name: string;
   description?: string;
-  enabled: boolean;
+  enabled: string;
   createdAt?: string;
   updatedAt?: string;
   creatorId?: number;
@@ -35,7 +35,7 @@ export const getColumns = (): TableColumnItem[] => [
     dataIndex: 'enabled',
     width: 100,
     customRender: ({ text }) => {
-      return h(Tag, { color: text ? 'green' : 'red' }, text ? '启用' : '禁用');
+      return h(Tag, { color: text === '1' ? 'green' : 'red' }, text === '1' ? '启用' : '禁用');
     },
   },
   {

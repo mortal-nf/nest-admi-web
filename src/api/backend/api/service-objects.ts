@@ -5,7 +5,7 @@ export interface ServiceObject {
   id: number;
   name: string;
   description?: string;
-  enabled: boolean;
+  enabled: string;
   createdAt: string;
   updatedAt: string;
   creatorId?: number;
@@ -16,14 +16,14 @@ export interface ServiceObject {
 export interface CreateServiceObjectRequest {
   name: string;
   description?: string;
-  enabled?: boolean;
+  enabled?: string;
 }
 
 // 更新服务对象请求参数
 export interface UpdateServiceObjectRequest {
   name?: string;
   description?: string;
-  enabled?: boolean;
+  enabled?: string;
 }
 
 // 服务对象查询参数
@@ -31,7 +31,7 @@ export interface ServiceObjectQueryParams {
   page?: number;
   pageSize?: number;
   name?: string;
-  enabled?: boolean;
+  enabled?: string;
 }
 
 // 创建服务对象

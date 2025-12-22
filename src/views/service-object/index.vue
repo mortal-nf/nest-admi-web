@@ -38,7 +38,7 @@ const [DynamicTable, dynamicTableInstance] = useTable({
     autoSubmitOnEnter: true,
     schemas: [
       { field: 'name', component: 'Input', label: '服务对象名称', colProps: { span: 8 } },
-      { field: 'enabled', component: 'Select', label: '状态', componentProps: { options: [{ label: '启用', value: 1 }, { label: '禁用', value: 0 }] }, colProps: { span: 8 } }
+      { field: 'enabled', component: 'Select', label: '状态', componentProps: { options: [{ label: '启用', value: '1' }, { label: '禁用', value: '0' }] }, colProps: { span: 8 } }
     ]
   }
 });

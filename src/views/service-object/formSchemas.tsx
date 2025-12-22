@@ -14,8 +14,12 @@ export const serviceObjectSchemas = (): FormSchema<Record<string, any>>[] => [
         field: 'enabled',
         component: 'Switch',
         label: '是否启用',
-        defaultValue: true,
-        rules: [{required: true, type: 'boolean', message: '请选择是否启用'}],
+        defaultValue: '1',
+        rules: [{required: true, type: 'string', message: '请选择是否启用'}],
+        componentProps: {
+            checkedValue: '1',
+            unCheckedValue: '0',
+        },
         colProps: {
             span: 12,
         },
