@@ -26,6 +26,8 @@ import * as netDiskManage from './netDiskManage';
 import * as netDiskOverview from './netDiskOverview';
 import * as businessTodo from './businessTodo';
 import * as projects from './projects';
+import * as serviceObjects from './service-objects';
+import * as requirementPools from './requirement-pools';
 
 export default {
   auth,
@@ -52,5 +54,7 @@ export default {
   netDiskOverview,
   businessTodo,
   projects,
+  serviceObjects,
+  requirementPools,
 
 };
