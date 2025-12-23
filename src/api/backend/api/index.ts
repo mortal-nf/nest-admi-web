@@ -28,6 +28,8 @@ import * as businessTodo from './businessTodo';
 import * as projects from './projects';
 import * as serviceObjects from './service-objects';
 import * as requirementPools from './requirement-pools';
+import * as requirements from './requirements';
+import * as taskNodes from './task-nodes';
 
 export default {
   auth,
@@ -56,5 +58,7 @@ export default {
   projects,
   serviceObjects,
   requirementPools,
+  requirements,
+  taskNodes,
 
 };

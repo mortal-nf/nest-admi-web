@@ -9,6 +9,7 @@ export interface Project {
   name: string;
   description?: string;
   status: ProjectStatus;
+  progress: number;
   startDate?: string;
   endDate?: string;
   requirementPoolId?: number;
@@ -17,6 +18,16 @@ export interface Project {
   updatedAt: string;
   creatorId?: number;
   updaterId?: number;
+  requirements?: {
+    id: number;
+    title: string;
+    progress: number;
+  }[];
+  taskNodes?: {
+    id: number;
+    title: string;
+    status: string;
+  }[];
 }
 
 // 创建项目请求参数
