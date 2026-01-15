@@ -29,7 +29,7 @@ import { computed, onMounted, ref } from 'vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Alert, Modal } from 'ant-design-vue';
 import { requirementSchemas } from './formSchemas';
-import { baseColumns, type TableColumnItem, type TableListItem } from './columns.tsx';
+import { baseColumns, type TableColumnItem, type TableListItem } from './columns';
 import type { LoadDataParams } from '@/components/core/dynamic-table';
 import { useTable } from '@/components/core/dynamic-table';
 import Api from '@/api/';
@@ -50,10 +50,33 @@ const [DynamicTable, dynamicTableInstance] = useTable({
     autoSubmitOnEnter: true,
     schemas: [
       { field: 'title', component: 'Input', label: '需求标题', colProps: { span: 8 } },
-      { field: 'status', component: 'Select', label: '状态', componentProps: { options: getDictOpions('requirement_status').value }, colProps: { span: 8 } },
-      { field: 'priority', component: 'Select', label: '优先级', componentProps: { options: getDictOpions('requirement_priority').value }, colProps: { span: 8 } },
-      { field: 'requirementPoolId', component: 'Select', label: '需求池', componentProps: { options: getDictOpions('requirement_pool').value }, colProps: { span: 8 } },
-      { field: 'projectId', component: 'Select', label: '所属项目', componentProps: { options: getDictOpions('project').value }, colProps: { span: 8 } },
+      { field: 'status', component: 'Select', label: '状态', componentProps: { 
+        options: [
+          { label: '待处理', value: 'pending' },
+          { label: '处理中', value: 'in_progress' },
+          { label: '已完成', value: 'completed' },
+          { label: '已取消', value: 'cancelled' },
+          { label: '已阻塞', value: 'blocked' },
+        ]
+      }, colProps: { span: 8 } },
+      { field: 'priority', component: 'Select', label: '优先级', componentProps: { 
+        options: [
+          { label: '低', value: 'low' },
+          { label: '中', value: 'medium' },
+          { label: '高', value: 'high' },
+          { label: '紧急', value: 'urgent' },
+        ]
+      }, colProps: { span: 8 } },
+      { field: 'requirementPoolId', component: 'ApiSelect', label: '需求池', componentProps: { 
+          placeholder: '请选择需求池',
+          api: Api.requirementPools.getRequirementPoolList,
+          params: { pageSize: 100 },
+          resultField: 'items',
+          labelField: 'name',
+          valueField: 'id',
+          searchField: 'name',
+          debounceTime: 300,
+        }, colProps: { span: 8 } },
     ]
   }
 });
@@ -61,7 +84,7 @@ const [showModal] = useFormModal();
 
 const rowSelection = ref({
   selectedRowKeys: [] as number[],
-  onChange: (selectedRowKeys: number[], selectedRows: TableListItem[]) => {
+  onChange: (selectedRowKeys: number[]) => {
     rowSelection.value.selectedRowKeys = selectedRowKeys;
   },
 });
@@ -123,26 +146,25 @@ const openRequirementModal = async (record: Partial<TableListItem> = {}) => {
 /**
  * @description 删除数据确认
  */
-const delRowConfirm = async (ids: number[]) => {
-  const confirm = await Modal.confirm({
+const delRowConfirm = (ids: number[]) => {
+  Modal.confirm({
     title: '确认删除',
     icon: <ExclamationCircleOutlined />,
     content: `确定要删除选中的${ids.length}条数据吗？此操作不可撤销。`,
     okText: '确定',
     okType: 'danger',
     cancelText: '取消',
-  });
-
-  if (confirm) {
-    try {
-      for (const id of ids) {
-        await Api.requirements.deleteRequirement(id);
+    onOk: async () => {
+      try {
+        for (const id of ids) {
+          await Api.requirements.deleteRequirement(id);
+        }
+        dynamicTableInstance?.reload();
+      } catch (error) {
+        console.error('删除失败:', error);
       }
-      dynamicTableInstance?.reload();
-    } catch (error) {
-      console.error('删除失败:', error);
     }
-  }
+  });
 };
 
 // 配置表格列，添加操作列回调

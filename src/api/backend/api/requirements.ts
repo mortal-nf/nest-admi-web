@@ -1,7 +1,7 @@
 import { request } from '@/utils/request';
 
 // 需求状态类型
-export type RequirementStatus = 'pending' | 'processing' | 'completed' | 'cancelled' | 'blocked';
+export type RequirementStatus = 'pending' | 'in_progress' | 'completed' | 'cancelled' | 'blocked';
 
 // 需求优先级类型
 export type RequirementPriority = 'low' | 'medium' | 'high' | 'urgent';
@@ -15,16 +15,11 @@ export interface Requirement {
   priority: RequirementPriority;
   progress: number;
   requirementPoolId: number;
-  projectId?: number;
   createdAt: string;
   updatedAt: string;
   creatorId?: number;
   updaterId?: number;
   requirementPool?: {
-    id: number;
-    name: string;
-  };
-  project?: {
     id: number;
     name: string;
   };
@@ -38,7 +33,6 @@ export interface CreateRequirementRequest {
   priority?: RequirementPriority;
   progress?: number;
   requirementPoolId: number;
-  projectId?: number;
 }
 
 // 更新需求请求参数
@@ -49,7 +43,6 @@ export interface UpdateRequirementRequest {
   priority?: RequirementPriority;
   progress?: number;
   requirementPoolId?: number;
-  projectId?: number;
 }
 
 // 需求查询参数
@@ -60,7 +53,6 @@ export interface RequirementQueryParams {
   status?: RequirementStatus;
   priority?: RequirementPriority;
   requirementPoolId?: number;
-  projectId?: number;
 }
 
 // 创建需求

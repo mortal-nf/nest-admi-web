@@ -1,8 +1,9 @@
 
+import Api from '@/api/';
+
 // 动态表单组件尚未提供类型声明，先使用 any 绕过编译错误
 // TODO: 待 @/components/core/dynamic-form 导出类型后，替换为真实类型
 type FormSchema = any;
-import Api from '@/api/';
 
 /**
  * 任务节点管理表单配置
@@ -111,22 +112,20 @@ export const taskNodeSchemas = (): FormSchema[] => {
     },
     {
       field: 'projectId',
-      component: 'Select',
+      component: 'ApiSelect',
       label: '所属项目',
       required: true,
       colProps: { span: 24 },
       componentProps: {
         placeholder: '请选择所属项目',
+        api: Api.projects.getProjectList,
+        params: { pageSize: 100 },
+        resultField: 'items',
+        labelField: 'name',
+        valueField: 'id',
+        searchField: 'name',
+        debounceTime: 300,
         allowClear: true,
-      },
-      options: async () => {
-        try {
-          const data = await Api.projects.getProjectList({ pageSize: 1000 });
-          return data.items.map(item => ({ label: item.name, value: item.id }));
-        } catch (error) {
-          console.error('获取项目列表失败:', error);
-          return [];
-        }
       },
       rules: [
         { required: true, message: '请选择所属项目', trigger: 'change' },

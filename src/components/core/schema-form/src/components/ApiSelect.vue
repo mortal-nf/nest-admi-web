@@ -4,6 +4,9 @@
     :options="getOptions"
     @dropdown-visible-change="handleFetch"
     @change="handleChange"
+    @search="handleSearch"
+    :show-search="true"
+    :filter-option="false"
   >
     <template v-for="item in Object.keys($slots)" #[item]="data">
       <slot :name="item" v-bind="data || {}" />
@@ -21,7 +24,7 @@
 </template>
 <script lang="ts" setup>
   import { ref, watchEffect, computed, unref, watch } from 'vue';
-  import { get, omit } from 'lodash-es';
+  import { get, omit, debounce } from 'lodash-es';
   import { LoadingOutlined } from '@ant-design/icons-vue';
   import { selectProps } from 'ant-design-vue/es/select';
   import { Select } from 'ant-design-vue';
@@ -56,6 +59,10 @@
     valueField: propTypes.string.def('value'),
     immediate: propTypes.bool.def(true),
     alwaysLoad: propTypes.bool.def(false),
+    // search field name
+    searchField: propTypes.string.def('name'),
+    // debounce time for search
+    debounceTime: propTypes.number.def(300),
   });
 
   const emit = defineEmits(['options-change', 'change']);
@@ -64,6 +71,7 @@
   const loading = ref(false);
   const isFirstLoad = ref(true);
   const emitData = ref<any[]>([]);
+  const searchKeyword = ref('');
   const { t } = useI18n();
 
   const getProps = computed(() => props as Recordable);
@@ -98,13 +106,23 @@
     { deep: true },
   );
 
+  const handleSearch = debounce((value: string) => {
+    searchKeyword.value = value;
+    fetch();
+  }, props.debounceTime);
+
   async function fetch() {
     const api = props.api;
     if (!api || !isFunction(api)) return;
     options.value = [];
     try {
       loading.value = true;
-      const res = await api(props.params);
+      // Merge search params with existing params
+      const requestParams = {
+        ...props.params,
+        [props.searchField]: searchKeyword.value,
+      };
+      const res = await api(requestParams);
       if (Array.isArray(res)) {
         options.value = res;
         emitChange();

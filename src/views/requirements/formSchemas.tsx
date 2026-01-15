@@ -1,6 +1,8 @@
-import { computed } from 'vue';
-import type { FormSchema } from '@/components/core/dynamic-form';
 import Api from '@/api/';
+
+// 动态表单组件尚未提供类型声明，先使用 any 绕过编译错误
+// TODO: 待 @/components/core/schema-form 导出类型后，替换为真实类型
+type FormSchema = any;
 
 /**
  * 需求管理表单配置
@@ -53,7 +55,7 @@ export const requirementSchemas = (): FormSchema[] => {
       },
       options: [
         { label: '待处理', value: 'pending' },
-        { label: '处理中', value: 'processing' },
+        { label: '处理中', value: 'in_progress' },
         { label: '已完成', value: 'completed' },
         { label: '已取消', value: 'cancelled' },
         { label: '已阻塞', value: 'blocked' },
@@ -106,45 +108,25 @@ export const requirementSchemas = (): FormSchema[] => {
     },
     {
       field: 'requirementPoolId',
-      component: 'Select',
+      component: 'ApiSelect',
       label: '需求池',
       required: true,
       colProps: { span: 24 },
       componentProps: {
         placeholder: '请选择需求池',
+        api: Api.requirementPools.getRequirementPoolList,
+        params: { pageSize: 100 },
+        resultField: 'items',
+        labelField: 'name',
+        valueField: 'id',
+        searchField: 'name',
+        debounceTime: 300,
         allowClear: true,
-      },
-      options: async () => {
-        try {
-          const data = await Api.requirementPools.getRequirementPoolList({ pageSize: 1000 });
-          return data.items.map(item => ({ label: item.name, value: item.id }));
-        } catch (error) {
-          console.error('获取需求池列表失败:', error);
-          return [];
-        }
       },
       rules: [
         { required: true, message: '请选择需求池', trigger: 'change' },
       ],
     },
-    {
-      field: 'projectId',
-      component: 'Select',
-      label: '所属项目',
-      colProps: { span: 24 },
-      componentProps: {
-        placeholder: '请选择所属项目（可选）',
-        allowClear: true,
-      },
-      options: async () => {
-        try {
-          const data = await Api.projects.getProjectList({ pageSize: 1000 });
-          return data.items.map(item => ({ label: item.name, value: item.id }));
-        } catch (error) {
-          console.error('获取项目列表失败:', error);
-          return [];
-        }
-      },
-    },
+
   ];
 };

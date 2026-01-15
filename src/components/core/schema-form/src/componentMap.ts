@@ -20,6 +20,7 @@ import {
   Upload,
 } from 'ant-design-vue';
 import type { Component, VNodeProps } from 'vue';
+import ApiSelect from './components/ApiSelect.vue';
 
 const componentMap = {
   Input,
@@ -30,6 +31,7 @@ const componentMap = {
   InputNumber,
   AutoComplete,
   Select,
+  ApiSelect,
   TreeSelect,
   Tree,
   Switch,

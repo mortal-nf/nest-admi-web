@@ -9,16 +9,11 @@ export interface TableListItem {
   priority: string;
   progress: number;
   requirementPoolId: number;
-  projectId?: number;
   createdAt: string;
   updatedAt: string;
   creatorId?: number;
   updaterId?: number;
   requirementPool?: {
-    id: number;
-    name: string;
-  };
-  project?: {
     id: number;
     name: string;
   };
@@ -48,7 +43,7 @@ export const baseColumns: TableColumnItem[] = [
     customRender: ({ text }) => {
       const statusMap: Record<string, { color: string; text: string }> = {
         pending: { color: 'orange', text: '待处理' },
-        processing: { color: 'blue', text: '处理中' },
+        in_progress: { color: 'blue', text: '处理中' },
         completed: { color: 'green', text: '已完成' },
         cancelled: { color: 'gray', text: '已取消' },
         blocked: { color: 'red', text: '已阻塞' },
@@ -88,12 +83,6 @@ export const baseColumns: TableColumnItem[] = [
   {
     title: '需求池',
     dataIndex: ['requirementPool', 'name'],
-    width: 150,
-    ellipsis: true,
-  },
-  {
-    title: '所属项目',
-    dataIndex: ['project', 'name'],
     width: 150,
     ellipsis: true,
   },

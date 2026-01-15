@@ -28,12 +28,10 @@ export const baseApiUrl = import.meta.env.VITE_BASE_API_URL;
 /** mock请求路径前缀 */
 // const baseMockUrl = import.meta.env.VITE_MOCK_API;
 
-const controller = new AbortController();
 const service = axios.create({
   baseURL: baseApiUrl,
   // adapter: 'fetch',
   timeout: 10000,
-  signal: controller.signal,
   paramsSerializer(params) {
     return qs.stringify(params, { arrayFormat: 'brackets' });
   },
